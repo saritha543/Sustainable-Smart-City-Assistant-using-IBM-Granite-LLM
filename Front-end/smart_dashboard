@@ -1,0 +1,117 @@
+import streamlit as st
+import requests
+
+st.set_page_config(page_title="Sustainable Smart City Assistant", layout="wide")
+st.title("🌇 Sustainable Smart City Assistant (Powered by IBM Granite)")
+
+# Sidebar for feature navigation
+selected = st.sidebar.selectbox(
+    "📂 Choose a Feature",
+    [
+        "🏙️ Smart City KPIs",
+        "♻️ Eco Tips",
+        "📝 Summarize Policy Document",
+        "🤖 Ask Granite AI",
+        "📢 Submit Feedback"
+    ]
+)
+
+# ---------------- Feature 1: Smart City KPIs ----------------
+if selected == "🏙️ Smart City KPIs":
+    st.subheader("📊 Key Performance Indicators")
+
+    city = st.selectbox("Select a City", ["Delhi", "Mumbai", "Hyderabad"])
+
+    kpi_data = {
+        "Delhi": {
+            "Water Usage": "1800 L/day (High consumption, water reuse projects ongoing)",
+            "Air Quality Index": "175 (Winter peak due to emissions and stubble burning)",
+            "Electricity Usage": "420 kWh/month (Smart meters under deployment)"
+        },
+        "Mumbai": {
+            "Water Usage": "1500 L/day (Rainwater harvesting encouraged in all buildings)",
+            "Air Quality Index": "43 (Cleaner air due to coastal ventilation)",
+            "Electricity Usage": "340 kWh/month (Solar incentives adopted in suburbs)"
+        },
+        "Hyderabad": {
+            "Water Usage": "1650 L/day (Greywater recycling pilot in place)",
+            "Air Quality Index": "55 (Moderate AQI, trees planted on arterial roads)",
+            "Electricity Usage": "390 kWh/month (Subsidized solar installation expanding)"
+        }
+    }
+
+    if st.button("View Detailed KPIs"):
+        st.markdown(f"### 📍 Metrics for {city}")
+        for metric, details in kpi_data[city].items():
+            st.markdown(f"**{metric}:** {details}")
+
+# ---------------- Feature 2: Eco Tips ----------------
+elif selected == "♻️ Eco Tips":
+    st.subheader("♻️ Eco-Friendly Tips and Practices")
+    keyword = st.text_input("Enter a sustainability keyword (e.g., water, air, energy):")
+
+    if st.button("Get Tips"):
+        try:
+            res = requests.post("http://localhost:8000/tips", json={"keyword": keyword.strip().lower()})
+            tips = res.json().get("tips", [])
+            if tips:
+                st.success(f"Eco Tips for '{keyword}':")
+                for i, tip in enumerate(tips, 1):
+                    st.markdown(f"**Tip {i}:** {tip}")
+            else:
+                st.warning("No tips found for that keyword. Try 'water', 'air', or 'energy'.")
+        except Exception as e:
+            st.error(f"Backend error: {e}")
+
+# ---------------- Feature 3: Policy Summary ----------------
+elif selected == "📝 Summarize Policy Document":
+    st.subheader("📄 AI-Powered Policy Summarization")
+    uploaded = st.file_uploader("Upload a text-based policy document", type=["txt"])
+
+    if uploaded and st.button("Summarize"):
+        try:
+            content = uploaded.read().decode("utf-8")
+            res = requests.post("http://localhost:8000/chat", json={"text": content})
+            summary = res.json().get("response", "")
+            st.success("Summary:")
+            st.write(summary)
+        except:
+            st.error("Backend failed to summarize.")
+
+# ---------------- Feature 4: Ask Granite AI ----------------
+elif selected == "🤖 Ask Granite AI":
+    st.subheader("💬 Ask the Granite AI Assistant")
+    prompt = st.text_area("Ask a question about sustainability, smart cities, or urban planning:")
+
+    if st.button("Ask"):
+        try:
+            res = requests.post("http://localhost:8000/chat", json={"text": prompt})
+            reply = res.json().get("response", "")
+            st.success("Granite AI says:")
+            st.write(reply)
+        except:
+            st.error("Granite backend not reachable.")
+
+# ---------------- Feature 5: Feedback ----------------
+elif selected == "📢 Submit Feedback":
+    st.subheader("📢 Citizen Feedback Form")
+
+    name = st.text_input("Your Name")
+    category = st.selectbox("Topic", ["Water", "Air", "Energy", "Other"])
+    message = st.text_area("Your Message")
+
+    if st.button("Submit Feedback"):
+        if name and message:
+            try:
+                res = requests.post("http://localhost:8000/feedback", json={
+                    "name": name, "category": category, "message": message
+                })
+                if res.status_code == 200:
+                    st.success("Feedback received! Thank you for contributing.")
+                    st.markdown(f"**Name:** {name}  \n**Category:** {category}  \n**Message:** {message}")
+                else:
+                    st.error("Submission failed.")
+            except:
+                st.error("Cannot connect to backend.")
+        else:
+            st.warning("Please complete all fields.")
