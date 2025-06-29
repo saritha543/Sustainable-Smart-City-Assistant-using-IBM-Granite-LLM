@@ -1,0 +1,16 @@
+import streamlit as st
+import requests
+
+st.title("Ask Sustainability Assistant")
+
+query = st.text_input("Enter your question")
+
+if st.button("Ask"):
+    if query:
+        try:
+            res = requests.post("http://localhost:8000/chat", json={"text": query})
+            st.success(res.json()["response"])
+        except Exception as e:
+            st.error(f"Error: {e}")
+    else:
+        st.warning("Please enter a question.")
