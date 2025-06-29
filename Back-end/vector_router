@@ -1,0 +1,30 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+router = APIRouter()
+
+eco_tip_data = {
+    "water": [
+        "💧 Fix household leaks: A dripping tap can waste over 3,000 liters of water annually.",
+        "🚿 Install low-flow showerheads and taps to reduce water consumption by up to 60%.",
+        "🌧️ Use rainwater harvesting systems to collect and reuse water for gardening or cleaning."
+    ],
+    "air": [
+        "🚌 Use public transportation or carpool to reduce carbon emissions and air pollutants.",
+        "🌳 Plant trees and support green spaces, which help absorb CO₂ and filter harmful gases.",
+        "🔥 Avoid open burning of waste, as it releases hazardous particulate matter into the air."
+    ],
+    "energy": [
+        "💡 Replace old bulbs with LED lights — they use 75% less energy and last longer.",
+        "🔌 Unplug devices when not in use to prevent phantom energy consumption.",
+        "☀️ Install solar panels to power your home with clean, renewable energy."
+    ]
+}
+
+class TipRequest(BaseModel):
+    keyword: str
+
+@router.post("/tips")
+def get_tips(data: TipRequest):
+    keyword = data.keyword.lower().strip()
+    return {"tips": eco_tip_data.get(keyword, [])}
