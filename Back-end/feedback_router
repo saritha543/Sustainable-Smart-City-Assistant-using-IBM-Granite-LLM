@@ -1,0 +1,16 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+router = APIRouter()
+
+feedback_list = []
+
+class Feedback(BaseModel):
+    name: str
+    category: str
+    message: str
+
+@router.post("/feedback")
+def submit_feedback(data: Feedback):
+    feedback_list.append(data.dict())
+    return {"message": "Feedback received"}
