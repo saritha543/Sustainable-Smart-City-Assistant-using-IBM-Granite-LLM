@@ -1,0 +1,40 @@
+def ask_granite(prompt: str):
+    prompt_lower = prompt.lower()
+
+    if "waste" in prompt_lower:
+        return (
+            "Smart cities can improve waste management by implementing the following:\n"
+            "1. Smart bins with IoT sensors for real-time monitoring.\n"
+            "2. Segregation of waste at the source (dry/wet).\n"
+            "3. AI-based route optimization for garbage collection.\n"
+            "4. Citizen awareness programs on recycling and composting.\n"
+            "5. Integration of waste-to-energy systems for sustainable disposal."
+        )
+
+    elif "energy" in prompt_lower:
+        return (
+            "To improve energy efficiency, smart cities can use LED lighting, solar rooftops, "
+            "smart grids, and energy monitoring systems. Promoting energy-efficient buildings and appliances "
+            "is also crucial."
+        )
+
+    elif "air quality" in prompt_lower:
+        return (
+            "Improving air quality can be achieved by reducing vehicular emissions, increasing green cover, "
+            "using electric transport, and monitoring AQI with sensor networks in real-time."
+        )
+
+    elif "water" in prompt_lower:
+        return (
+            "Smart cities conserve water through:\n"
+            "• Rainwater harvesting\n"
+            "• Smart water meters\n"
+            "• Leak detection systems\n"
+            "• Reuse of greywater for landscaping and flushing"
+        )
+
+    else:
+        return (
+            "That's a great question! Our smart assistant is still learning. Please ask about topics like "
+            "waste management, energy, air quality, or water conservation."
+        )
