@@ -1,0 +1,19 @@
+import streamlit as st
+import requests
+
+st.title("Citizen Feedback Form")
+
+name = st.text_input("Name")
+category = st.selectbox("Category", ["Waste", "Water", "Air", "Energy"])
+message = st.text_area("Message")
+
+if st.button("Submit"):
+    if name and category and message:
+        try:
+            payload = {"name": name, "category": category, "message": message}
+            res = requests.post("http://localhost:8000/feedback", json=payload)
+            st.success(res.json()["message"])
+        except Exception as e:
+            st.error(f"Error: {e}")
+    else:
+        st.warning("Please fill all fields.")
