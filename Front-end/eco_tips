@@ -1,0 +1,27 @@
+import streamlit as st
+import requests
+
+st.set_page_config(page_title="Eco Tips")
+st.title("♻️ Eco-Friendly Tips Assistant")
+
+keyword = st.text_input("Enter a sustainability keyword (e.g., water, air, energy)")
+
+if st.button("Get Eco Tips"):
+    keyword = keyword.strip().lower()
+    if not keyword:
+        st.warning("Please enter a keyword.")
+    else:
+        try:
+            response = requests.post("http://localhost:8000/tips", json={"keyword": keyword})
+            if response.status_code == 200:
+                tips = response.json().get("tips", [])
+                if tips:
+                    st.success(f"💡 Eco Tips for '{keyword}':")
+                    for i, tip in enumerate(tips, start=1):
+                        st.markdown(f"**Tip {i}:** {tip}")
+                else:
+                    st.warning("No detailed tips found for this keyword.")
+            else:
+                st.error("Error occurred while fetching tips.")
+        except Exception as e:
+            st.error(f"Backend connection failed. Error: {e}")
