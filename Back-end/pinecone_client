@@ -1,0 +1,12 @@
+def search_vector(query: str):
+    dummy_tips = {
+        "energy": ["Use LED lights", "Turn off appliances when not in use"],
+        "water": ["Fix leaks", "Use low-flow taps"],
+        "air": ["Plant trees", "Use public transport"]
+    }
+
+    results = dummy_tips.get(query.lower(), ["No tips found for this keyword."])
+    return {
+        "query": query,
+        "matches": results
+    }
