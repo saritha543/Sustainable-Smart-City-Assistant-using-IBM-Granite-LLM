@@ -1,0 +1,13 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
+from granite_llm import ask_granite
+
+router = APIRouter()
+
+class Prompt(BaseModel):
+    text: str
+
+@router.post("/chat")
+def chat_response(data: Prompt):
+    reply = ask_granite(data.text)
+    return {"response": reply}
